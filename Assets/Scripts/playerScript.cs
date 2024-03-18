@@ -24,8 +24,6 @@ public class playerScript : MonoBehaviour
     bool isJump;
 
 
-    int jumpID;
-
 
     void Start()
     {
@@ -33,7 +31,12 @@ public class playerScript : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         anim = GetComponentInChildren<Animator>();
 
-        jumpID = Animator.StringToHash("Jump");
+        anim.SetBool("CrouchMove", false);
+        anim.SetBool("Crouch", false);
+        anim.SetBool("walk", false);
+        anim.SetBool("Hang", false);
+        anim.SetBool("Jump", false);
+
     }
 
     private void Update()
@@ -41,31 +44,32 @@ public class playerScript : MonoBehaviour
         movex = Input.GetAxis("Horizontal");
         moveY = Input.GetAxis("Vertical");
 
-        if (movex != 0 && moveY == 0)
-        {
-            playerState = PlayerState.Move;
-        }
-        else if (movex == 0 && moveY < 0)
-        {
-            BoxColl.enabled = false;
-            playerState = PlayerState.Crouch;
-        }
-        else if (movex != 0 && moveY != 0)
-        {
-            playerState = PlayerState.CrouchMove;
-        }
-        else if((moveY > 0 && isGrounded) || movex != 0)
-        {
-            playerState = PlayerState.Jump;
-            //playerState = PlayerState.Hang;
-        }
-        else
-        {
-            BoxColl.enabled = true;
-            playerState = PlayerState.Idle;
-        }
+        //if (movex != 0 && moveY == 0)
+        //{
+        //    playerState = PlayerState.Move;
+        //}
+        //else if (movex == 0 && moveY < 0)
+        //{
+        //    BoxColl.enabled = false;
+        //    playerState = PlayerState.Crouch;
+        //}
+        //else if (movex != 0 && moveY != 0)
+        //{
+        //    playerState = PlayerState.CrouchMove;
+        //}
+        //else if((moveY > 0 && isGrounded) || movex != 0)
+        //{
+        //    playerState = PlayerState.Jump;
+        //    //playerState = PlayerState.Hang;
+        //}
+        //else
+        //{
+        //    BoxColl.enabled = true;
+        //    playerState = PlayerState.Idle;
+        //}
 
         Movement();
+        crouch();
 
         Flip();
 
@@ -82,36 +86,63 @@ public class playerScript : MonoBehaviour
     
     void Movement()
     {
-        if(playerState == PlayerState.Idle)
-        {
-            anim.SetBool("CrouchMove", false);
-            anim.SetBool("Crouch", false);
+        transform.Translate(new Vector3(movex * speed * Time.deltaTime, 0, 0));
+        if(movex == 0)
             anim.SetBool("walk", false);
-        }
-        else if(playerState == PlayerState.Move)
-        {
+        else
             anim.SetBool("walk", true);
-            anim.SetFloat(jumpID, 0);
-            transform.Translate(new Vector3(movex * speed * Time.deltaTime, 0, 0));
-        }
-        else if (playerState == PlayerState.Crouch)
+
+
+
+        //if(playerState == PlayerState.Idle)
+        //{
+        //    anim.SetBool("CrouchMove", false);
+        //    anim.SetBool("Crouch", false);
+        //    anim.SetBool("walk", false);
+        //    anim.SetBool("Hang", false);
+        //    anim.SetBool("Jump", false);
+        //}
+        //else if(playerState == PlayerState.Move)
+        //{
+        //    anim.SetBool("walk", true);
+        //    transform.Translate(new Vector3(movex * speed * Time.deltaTime, 0, 0));
+        //}
+        //else if (playerState == PlayerState.Crouch)
+        //{
+        //    anim.SetBool("CrouchMove", false);            
+        //    anim.SetBool("Crouch", true);
+        //}
+        //else if (playerState == PlayerState.CrouchMove)
+        //{
+        //    anim.SetBool("CrouchMove", true);
+        //    transform.Translate(new Vector3(movex * speed/2 * Time.deltaTime, 0, 0));
+        //}
+        //else if(playerState == PlayerState.Jump)
+        //{
+        //    rb.velocity = Vector2.up * jumpForce;
+        //    anim.SetBool("Jump", true);
+        //    isJump = true;
+        //}
+    }
+
+    void crouch()
+    {
+        if(moveY < 0)
         {
-            anim.SetBool("CrouchMove", false);
-            
             anim.SetBool("Crouch", true);
+            BoxColl.enabled = false;
+            if (movex != 0)
+                anim.SetBool("CrouchMove", true);
+            else
+                anim.SetBool("CrouchMove", false);
         }
-        else if (playerState == PlayerState.CrouchMove)
+        else
         {
-            anim.SetBool("CrouchMove", true);
-            transform.Translate(new Vector3(movex * speed/2 * Time.deltaTime, 0, 0));
-        }
-        else if(playerState == PlayerState.Jump)
-        {
-            rb.velocity = Vector2.up * jumpForce;
-            anim.SetFloat(jumpID, 1);
-            isJump = true;
+            BoxColl.enabled = true;
+            anim.SetBool("Crouch", false);
         }
     }
+
     
 
 
@@ -121,7 +152,6 @@ public class playerScript : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("platform"))
             {
-                Debug.Log("Emter 1");
                 anim.SetBool("Hang", true);
             }
         }

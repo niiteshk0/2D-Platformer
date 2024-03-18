@@ -31,7 +31,6 @@ public class movingPlatform : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             collision.transform.SetParent(this.transform);
-            
             collision.transform.localScale = Vector3.one;
 
         }
