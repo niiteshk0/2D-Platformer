@@ -31,7 +31,7 @@ public class movingPlatform : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             collision.transform.SetParent(this.transform);
-            collision.transform.localScale = Vector3.one;
+            //collision.transform.localScale = Vector3.one;
 
         }
     }
@@ -40,7 +40,7 @@ public class movingPlatform : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             collision.transform.SetParent(null);
-            collision.transform.localScale = Vector3.one;
+            //collision.transform.localScale = Vector3.one;
         }
     }
 }

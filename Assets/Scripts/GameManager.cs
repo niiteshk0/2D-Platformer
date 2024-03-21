@@ -8,14 +8,14 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public Animator anim;   // For the dorr animation
-    public int orb;
     public GameObject uiPanel;
 
+    private void Start()
+    {
+        uiPanel.SetActive(false);
+    }
     private void Update()
     {
-        //if (orb == 7)
-        //    anim.SetBool("Open", true);
-
         GameObject myObject = GameObject.FindWithTag("shrine");
 
         if(myObject == null)
@@ -35,18 +35,10 @@ public class GameManager : MonoBehaviour
 
         if (collision.gameObject.transform.GetChild(0).CompareTag("shrine"))
         {
-
-            orb++;
             GameObject childShrine = collision.gameObject.transform.GetChild(0).gameObject;
             Destroy(childShrine);
-
-            Debug.Log(orb);
         }
 
-        if (collision.gameObject.transform.GetChild(0).CompareTag("door"))
-        {
-            Debug.Log("Enter in gate");
-        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
