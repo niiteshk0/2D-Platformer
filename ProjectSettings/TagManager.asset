@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - platform
+  - shrine
+  - spikes
+  - Ground
+  - win
+  - door
   layers:
   - Default
   - TransparentFX

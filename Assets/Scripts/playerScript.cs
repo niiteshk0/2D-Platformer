@@ -9,11 +9,12 @@ public class playerScript : MonoBehaviour
     Animator anim;
     [SerializeField] BoxCollider2D BoxColl;
 
-    public PlayerState playerState;
+    //public PlayerState playerState;
 
     float movex;
     float moveY;
     [SerializeField] float speed;
+    [SerializeField] float crouchSpeed;
 
     [Header("Ground Checking")]
     [SerializeField] float jumpForce;
@@ -21,7 +22,7 @@ public class playerScript : MonoBehaviour
     public LayerMask layerMask;
     float groundCheckRadius = 0.1f;
     bool isGrounded;
-    bool isJump;
+    bool isCrouchMove;
 
 
 
@@ -34,8 +35,6 @@ public class playerScript : MonoBehaviour
         anim.SetBool("CrouchMove", false);
         anim.SetBool("Crouch", false);
         anim.SetBool("walk", false);
-        anim.SetBool("Hang", false);
-        anim.SetBool("Jump", false);
 
     }
 
@@ -74,10 +73,10 @@ public class playerScript : MonoBehaviour
         Flip();
 
 
-        //if (isGrounded && Input.GetKey(KeyCode.Space))
-        //{
-        //    Jump();
-        //}
+        if (isGrounded && Input.GetKey(KeyCode.Space))
+        {
+            Jump();
+        }
     }
     void FixedUpdate()
     {
@@ -86,9 +85,15 @@ public class playerScript : MonoBehaviour
     
     void Movement()
     {
-        transform.Translate(new Vector3(movex * speed * Time.deltaTime, 0, 0));
-        if(movex == 0)
+        if(!isCrouchMove)
+        {
+            transform.Translate(new Vector3(movex * speed * Time.deltaTime, 0, 0));
+        }
+
+        if (movex == 0)
+        {
             anim.SetBool("walk", false);
+        }
         else
             anim.SetBool("walk", true);
 
@@ -127,14 +132,22 @@ public class playerScript : MonoBehaviour
 
     void crouch()
     {
-        if(moveY < 0)
+        if(moveY < 0 && isGrounded)
         {
             anim.SetBool("Crouch", true);
             BoxColl.enabled = false;
-            if (movex != 0)
-                anim.SetBool("CrouchMove", true);
-            else
+
+            if (movex == 0)
+            {
+                isCrouchMove = false;
                 anim.SetBool("CrouchMove", false);
+            }
+            else
+            {
+                isCrouchMove = true;   
+                transform.Translate(new Vector3(movex * crouchSpeed * Time.deltaTime, 0, 0));
+                anim.SetBool("CrouchMove", true);
+            }
         }
         else
         {
@@ -142,19 +155,10 @@ public class playerScript : MonoBehaviour
             anim.SetBool("Crouch", false);
         }
     }
-
     
-
-
-    private void OnCollisionEnter2D(Collision2D collision)
+    void Jump()
     {
-        if (isJump)
-        {
-            if (collision.gameObject.CompareTag("platform"))
-            {
-                anim.SetBool("Hang", true);
-            }
-        }
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
     void Flip()
@@ -163,23 +167,19 @@ public class playerScript : MonoBehaviour
         {
             transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
         }
-        else if(movex < -0.1f)
+        else if (movex < -0.1f)
         {
             transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
         }
     }
-    void Jump()
-    {
-        
-    }
 }
 
-public enum PlayerState
-{
-    Idle,
-    Move,
-    Crouch,
-    Jump,
-    Hang,
-    CrouchMove
-}
+//public enum PlayerState
+//{
+//    Idle,
+//    Move,
+//    Crouch,
+//    Jump,
+//    Hang,
+//    CrouchMove
+//}
