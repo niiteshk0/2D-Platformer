@@ -24,6 +24,7 @@ public class playerScript : MonoBehaviour
     bool isGrounded;
     bool isCrouchMove;
 
+    public AudioSource backgroundAudio;
 
 
     void Start()
@@ -35,6 +36,8 @@ public class playerScript : MonoBehaviour
         anim.SetBool("CrouchMove", false);
         anim.SetBool("Crouch", false);
         anim.SetBool("walk", false);
+
+        backgroundAudio.Play();
 
     }
 
@@ -158,6 +161,7 @@ public class playerScript : MonoBehaviour
     
     void Jump()
     {
+        audioManager.instance.JumpAudio();
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 

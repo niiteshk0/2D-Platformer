@@ -9,10 +9,12 @@ public class movingPlatform : MonoBehaviour
     [SerializeField] float speed;
     Vector2 targetPos;
 
+
+
     void Start()
     {
         targetPos = startPos.position;
-    }
+    }   
 
     // Update is called once per frame
     void Update()
@@ -32,7 +34,6 @@ public class movingPlatform : MonoBehaviour
         {
             collision.transform.SetParent(this.transform);
             //collision.transform.localScale = Vector3.one;
-
         }
     }
     private void OnTriggerExit2D(Collider2D collision)

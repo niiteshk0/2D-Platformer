@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
 
         if (collision.gameObject.transform.GetChild(0).CompareTag("shrine"))
         {
+            audioManager.instance.CollectAudio();
             GameObject childShrine = collision.gameObject.transform.GetChild(0).gameObject;
             Destroy(childShrine);
         }
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour
         if(collision.gameObject.CompareTag("win"))
         {
             Debug.Log("Enter in single door1");
+            audioManager.instance.WinAudio();
             uiPanel.SetActive(true);
         }
         
